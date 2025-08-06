@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+  <title>RHL .V3</title>
+  <link rel="icon" type="image/x-icon" href="Textures/RHL-FAVICON.png">
+</head>
+<style>
+    body {
+   background-image: url(Textures/Design/Base/Background-Tiles.png);
+   background-color: lightslategray;
+    }
+
+    @keyframes color-sway {
+      from {background-color: blue;} 
+      to {background-color: red;}
+    }
+    #display {
+      background: #111;
+    height: 540px;
+    width: 960px;
+      background-color: white;
+    }
+    #file_browser {
+      border-radius: 10px;
+      background-color: #c9c9c9;
+      animation-name: color-sway;
+      animation-duration: 1s;
+      width: inherit;
+    }
+    #outputTxt {
+      width: 965px;
+      min-width: 965px;
+      height: 259px;
+      border-style: double;
+      background-color: whitesmoke;
+    }
+    #file_browser:hover {
+     font-weight: bold;
+     text-shadow: black;
+    }
+    
+</style>
+<body>
+
+<div style="background-color: grey; border-radius: 10px;">
+<input id="file_browser" type="file">
+  <button id="load" style="background-color: orange; color: white; border-style: none;">Run</button>
+  <button id="save" style="background-color: green; color: white; border-radius: 5px; border-style: none;">Save as htm</button>
+  <button id="fullscreen" style="background-color: whitesmoke; color: black; border-radius: 10px; border-width: 2px; border-color: black;">Fullscreen</button>
+  <button id="select" style="background-color: whitesmoke; color: black; border-radius: 10px; border-width: 2px; border-color: black;">Select All</button>
+  <button id="encoder" style="background-color: whitesmoke; color: black; border-radius: 10px; border-width: 2px; border-color: black;">Encode to Base 64</button>
+  <button id="decoder" style="background-color: whitesmoke; color: black; border-radius: 10px; border-width: 2px; border-color: black;">Decode Base 64</button>
+  <a id="base64ed" type="button" style="background-color: whitesmoke; color: black; border-radius: 10px; border-width: 2px; border-color: black;">RHL HTML Edition</a>
+</div>
+<div style="text-align: center; width: 1920px; height: 540px;">
+  <iframe id="display" srcdoc="press the run button when you have valid code in the textarea"></iframe>
+  <textarea id="outputTxt" autocorrect="off"></textarea>
+</div>
+<p src="base64.txt" id="textSection"></p>
+</body>
+
+<script>
+const input = document.querySelector('input');
+let display = document.getElementById('display');
+const loadbut = document.getElementById("load");
+const savehtmlbut = document.getElementById("save");
+const fullscreenbut = document.getElementById("fullscreen");
+const base64ed = document.getElementById("base64ed");
+const selectall = document.getElementById("select");
+const encoder = document.getElementById("encoder");
+const decoder = document.getElementById("decoder");
+let outputTxt = document.getElementById("outputTxt");
+
+function downloadFile(file) {
+const link = document.createElement('a');
+const url = URL.createObjectURL(file);
+link.href = url
+link.download = file.name;
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+URL.revokeObjectURL(url);
+}
+
+loadbut.onclick = () => {
+  if (!outputTxt.value || outputTxt.value == "") {
+   
+  } else {display.setAttribute('srcdoc', outputTxt.value);}
+
+}
+savehtmlbut.onclick = () => {
+  const file = new File([outputTxt.value], "MyHTML", {type: "text/html"});
+  downloadFile(file);
+}
+fullscreenbut.onclick = () => {
+  display.requestFullscreen();
+}
+selectall.onclick = () => {
+  outputTxt.select();
+}
+encoder.onclick = () => {
+ let base64value = btoa(outputTxt.value);
+ outputTxt.value = base64value;
+}
+decoder.onclick = () => {
+  let base64value = atob(outputTxt.value);
+  outputTxt.value = base64value
+}
+base64ed.onclick = () => {
+ 
+}
+
+input.addEventListener('change', (event) => {
+let reader = new FileReader();
+
+reader.onload = () => {
+outputTxt.value = reader.result
+}
+reader.readAsText(event.target.files[0]);
+});
+
+</script>
+</html>
